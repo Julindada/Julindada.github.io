@@ -86,10 +86,14 @@
 <meta property="og:site_name" content="Julindada">
 <meta property="og:description" content="一、Java内存模型（1）高速缓存的引入解决了CPU与内存的速度差异矛盾，但引入了一个新的问题：缓存一致性（Cache Coherence）。为了解决一致性问题，需要各个处理器访问缓存时都遵循一些协议。 Java内存模型可以理解为在特定操作协议下，对特定的内存或高速缓存进行读写访问的过程抽象。Java内存模型屏蔽了各种硬件和操作系统的内存访问差异，是Java跨平台特性的基础。Java内存模型中主内">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2018-12-20T06:27:07.522Z">
+<meta property="og:image" content="http://yoursite.com/images/ClassBytecode.png">
+<meta property="og:image" content="http://yoursite.com/images/assembly_1.png">
+<meta property="og:image" content="http://yoursite.com/images/assembly_2.png">
+<meta property="og:updated_time" content="2018-12-20T07:18:37.936Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Java内存模型与volatile实现原理">
 <meta name="twitter:description" content="一、Java内存模型（1）高速缓存的引入解决了CPU与内存的速度差异矛盾，但引入了一个新的问题：缓存一致性（Cache Coherence）。为了解决一致性问题，需要各个处理器访问缓存时都遵循一些协议。 Java内存模型可以理解为在特定操作协议下，对特定的内存或高速缓存进行读写访问的过程抽象。Java内存模型屏蔽了各种硬件和操作系统的内存访问差异，是Java跨平台特性的基础。Java内存模型中主内">
+<meta name="twitter:image" content="http://yoursite.com/images/ClassBytecode.png">
 
 
 
@@ -367,9 +371,9 @@
 <p>通过DCL代码理解volatile原理</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> Singleton <span class="title">getSingleton</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (singleton == <span class="keyword">null</span>) &#123;</span><br><span class="line">            <span class="keyword">synchronized</span> (Singleton.class) &#123;</span><br><span class="line">                <span class="keyword">if</span> (singleton == <span class="keyword">null</span>) &#123;</span><br><span class="line">                    singleton = <span class="keyword">new</span> Singleton();</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> singleton;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>singleton = new Singleton()的class字节码指令：</p>
-<p>利用hsdis和JITWatch查看分析HotSpot JIT compiler生成的汇编代码：</p>
-<p><strong>使用volatile修饰</strong></p>
-<p><strong>不使用volatile修饰</strong></p>
+<p>利用hsdis和JITWatch查看分析HotSpot JIT compiler生成的汇编代码：<br><img src="/images/ClassBytecode.png" alt=""></p>
+<p><strong>使用volatile修饰</strong><br><img src="/images/assembly_1.png" alt=""></p>
+<p><strong>不使用volatile修饰</strong><br><img src="/images/assembly_2.png" alt=""></p>
 <p>使用volatile比不使用多了一行lock addl $0x0,(%rsp)。lock前缀相当与一个内存屏障，有三个功能：</p>
 <ol>
 <li>重排序时不能把后面的指令重排序到内存屏障之前</li>

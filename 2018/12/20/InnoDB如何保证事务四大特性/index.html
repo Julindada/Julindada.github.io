@@ -79,17 +79,19 @@
 
 
 
-<meta name="description" content="事务的四大特性 原子性(Atomicity)：原子性指整个数据库事务是不可分割的工作单位。事务中所有的数据库操作，要么全部提交成功，要么全部失败回滚。  一致性(Consistency)：数据库总是从一个一致性的状态转换到另一个一致性的状态。  隔离性(Isolation)：事务的隔离性要求每个读写事务的对象对其他事务的操作对象能相互分离，即该事务提交前对其他事务都不可见。  持久性(Durabi">
+<meta name="description" content="事务的四大特性  原子性(Atomicity)：原子性指整个数据库事务是不可分割的工作单位。事务中所有的数据库操作，要么全部提交成功，要么全部失败回滚。  一致性(Consistency)：数据库总是从一个一致性的状态转换到另一个一致性的状态。  隔离性(Isolation)：事务的隔离性要求每个读写事务的对象对其他事务的操作对象能相互分离，即该事务提交前对其他事务都不可见。  持久性(Durab">
 <meta property="og:type" content="article">
 <meta property="og:title" content="InnoDB如何保证事务四大特性">
 <meta property="og:url" content="http://yoursite.com/2018/12/20/InnoDB如何保证事务四大特性/index.html">
 <meta property="og:site_name" content="Julindada">
-<meta property="og:description" content="事务的四大特性 原子性(Atomicity)：原子性指整个数据库事务是不可分割的工作单位。事务中所有的数据库操作，要么全部提交成功，要么全部失败回滚。  一致性(Consistency)：数据库总是从一个一致性的状态转换到另一个一致性的状态。  隔离性(Isolation)：事务的隔离性要求每个读写事务的对象对其他事务的操作对象能相互分离，即该事务提交前对其他事务都不可见。  持久性(Durabi">
+<meta property="og:description" content="事务的四大特性  原子性(Atomicity)：原子性指整个数据库事务是不可分割的工作单位。事务中所有的数据库操作，要么全部提交成功，要么全部失败回滚。  一致性(Consistency)：数据库总是从一个一致性的状态转换到另一个一致性的状态。  隔离性(Isolation)：事务的隔离性要求每个读写事务的对象对其他事务的操作对象能相互分离，即该事务提交前对其他事务都不可见。  持久性(Durab">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2018-12-20T06:43:50.494Z">
+<meta property="og:image" content="http://yoursite.com/images/acid.png">
+<meta property="og:updated_time" content="2018-12-20T07:18:17.677Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="InnoDB如何保证事务四大特性">
-<meta name="twitter:description" content="事务的四大特性 原子性(Atomicity)：原子性指整个数据库事务是不可分割的工作单位。事务中所有的数据库操作，要么全部提交成功，要么全部失败回滚。  一致性(Consistency)：数据库总是从一个一致性的状态转换到另一个一致性的状态。  隔离性(Isolation)：事务的隔离性要求每个读写事务的对象对其他事务的操作对象能相互分离，即该事务提交前对其他事务都不可见。  持久性(Durabi">
+<meta name="twitter:description" content="事务的四大特性  原子性(Atomicity)：原子性指整个数据库事务是不可分割的工作单位。事务中所有的数据库操作，要么全部提交成功，要么全部失败回滚。  一致性(Consistency)：数据库总是从一个一致性的状态转换到另一个一致性的状态。  隔离性(Isolation)：事务的隔离性要求每个读写事务的对象对其他事务的操作对象能相互分离，即该事务提交前对其他事务都不可见。  持久性(Durab">
+<meta name="twitter:image" content="http://yoursite.com/images/acid.png">
 
 
 
@@ -341,7 +343,8 @@
       
 
       
-        <h2 id="事务的四大特性"><a href="#事务的四大特性" class="headerlink" title="事务的四大特性"></a>事务的四大特性</h2><ol>
+        <h2 id="事务的四大特性"><a href="#事务的四大特性" class="headerlink" title="事务的四大特性"></a>事务的四大特性</h2><p><img src="/images/acid.png" alt=""></p>
+<ol>
 <li><p>原子性(Atomicity)：原子性指整个数据库事务是不可分割的工作单位。事务中所有的数据库操作，要么全部提交成功，要么全部失败回滚。</p>
 </li>
 <li><p>一致性(Consistency)：数据库总是从一个一致性的状态转换到另一个一致性的状态。</p>
