@@ -1,0 +1,832 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/hexo_icon.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/hexo_icon.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/hexo_icon.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/hexo_icon.png?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="B树(Balance Tree)本质属于一颗平衡树。   B+树是基于B树和叶子节点顺序访问指针进行实现，它具有B树的平衡性，并且通过顺序访问指针来提高区间查询的性能。  为什么使用B+树？（1）B+树比起二叉树的优势 索引以索引文件的形式存储的磁盘上，每次读取节点就会进行一次磁盘IO操作，获取一个页（操作系统一般将内存和磁盘分割成固态大小的块，每一块称为一页，内存与磁盘以页为单位交换数据），而">
+<meta property="og:type" content="article">
+<meta property="og:title" content="InnoDB索引详解">
+<meta property="og:url" content="http://yoursite.com/2018/12/20/InnoDB索引详解/index.html">
+<meta property="og:site_name" content="Julindada">
+<meta property="og:description" content="B树(Balance Tree)本质属于一颗平衡树。   B+树是基于B树和叶子节点顺序访问指针进行实现，它具有B树的平衡性，并且通过顺序访问指针来提高区间查询的性能。  为什么使用B+树？（1）B+树比起二叉树的优势 索引以索引文件的形式存储的磁盘上，每次读取节点就会进行一次磁盘IO操作，获取一个页（操作系统一般将内存和磁盘分割成固态大小的块，每一块称为一页，内存与磁盘以页为单位交换数据），而">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2018-12-20T06:42:33.076Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="InnoDB索引详解">
+<meta name="twitter:description" content="B树(Balance Tree)本质属于一颗平衡树。   B+树是基于B树和叶子节点顺序访问指针进行实现，它具有B树的平衡性，并且通过顺序访问指针来提高区间查询的性能。  为什么使用B+树？（1）B+树比起二叉树的优势 索引以索引文件的形式存储的磁盘上，每次读取节点就会进行一次磁盘IO操作，获取一个页（操作系统一般将内存和磁盘分割成固态大小的块，每一块称为一页，内存与磁盘以页为单位交换数据），而">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2018/12/20/InnoDB索引详解/">
+
+
+
+
+
+  <title>InnoDB索引详解 | Julindada</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Julindada</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/12/20/InnoDB索引详解/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Julindada">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Julindada">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">InnoDB索引详解</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-12-20T14:41:21+08:00">
+                2018-12-20
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/数据库/" itemprop="url" rel="index">
+                    <span itemprop="name">数据库</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <blockquote>
+<p>B树(Balance Tree)本质属于一颗平衡树。</p>
+</blockquote>
+<blockquote>
+<p>B+树是基于B树和叶子节点顺序访问指针进行实现，它具有B树的平衡性，并且通过顺序访问指针来提高区间查询的性能。</p>
+</blockquote>
+<h2 id="为什么使用B-树？"><a href="#为什么使用B-树？" class="headerlink" title="为什么使用B+树？"></a>为什么使用B+树？</h2><p>（1）B+树比起二叉树的优势</p>
+<p>索引以索引文件的形式存储的磁盘上，每次读取节点就会进行一次磁盘IO操作，获取一个页（操作系统一般将内存和磁盘分割成固态大小的块，每一块称为一页，内存与磁盘以页为单位交换数据），而B+树“矮胖”的特点可以减少IO操作次数，以提升效率。</p>
+<p>（2）B+树为什么比B树更合适？</p>
+<ol>
+<li>B+树非叶子节点只包含关键字，每个磁盘块可以存储更多的关键字；而B树非叶子节点还包含数据，所以B+树中每个磁盘块可以存储更多关键字，更矮胖，IO次数更少。</li>
+<li>B+树叶子节点存储全部数据，数据以指针相连形成链表；而B树非叶子节点的数据未存储在叶子节点上。所以B+树的范围查找效率比B树更高。</li>
+<li>B+树查询必须查找到叶子节点，B树只要匹配到即可不用管元素位置，所以B+树查找更稳定（并不慢）。</li>
+</ol>
+<h2 id="B-树索引的分裂"><a href="#B-树索引的分裂" class="headerlink" title="B+树索引的分裂"></a>B+树索引的分裂</h2><ol>
+<li>按照原页中点分裂，再将数据插入。（随机插入）</li>
+<li>分裂操作优化：不移动原页，将数据插入到新页中。（递增递减插入）</li>
+</ol>
+<p><a href="http://allan.li/mysql-index-optimize/" target="_blank" rel="noopener">从MySQL Bug#67718浅谈B+树索引的分裂优化</a></p>
+<h2 id="B-树索引的管理"><a href="#B-树索引的管理" class="headerlink" title="B+树索引的管理"></a>B+树索引的管理</h2><p>创建索引（联合索引）</p>
+<blockquote>
+<p>ALTER TABLE table_name ADD INDEX index_name (column_list1,column_list2);</p>
+</blockquote>
+<blockquote>
+<p>ALTER TABLE table_name ADD UNIQUE (column_list1,column_list2);</p>
+</blockquote>
+<blockquote>
+<p>ALTER TABLE table_name ADD PRIMARY KEY (column_list1,column_list2);</p>
+</blockquote>
+<blockquote>
+<p>CREATE INDEX index_name ON table_name (column_list1,column_list2);</p>
+</blockquote>
+<blockquote>
+<p>CREATE UNIQUE INDEX index_name ON table_name (column_list1,column_list2);</p>
+</blockquote>
+<p>删除索引</p>
+<blockquote>
+<p>DROP INDEX index_name ON talbe_name;</p>
+</blockquote>
+<blockquote>
+<p>ALTER TABLE table_name DROP INDEX index_name;</p>
+</blockquote>
+<blockquote>
+<p>ALTER TABLE table_name DROP PRIMARY KEY;</p>
+</blockquote>
+<p>查看索引</p>
+<blockquote>
+<p>SHOW INDEX FROM talbe_name;</p>
+</blockquote>
+<blockquote>
+<p>SHOW KEYS FROM talbe_name;</p>
+</blockquote>
+<ul>
+<li>Table： 表的名称</li>
+<li>Non_unique： 非唯一，如果索引不能包括重复词，则为0。如果可以，则为1</li>
+<li>Key_name： 索引名称，可以用这个名称DROP INDEX</li>
+<li>Seq_in_index： 索引中该列的位置（常见于联合索引）</li>
+<li>Column_name： 索引列的名称</li>
+<li>Collation： 索引存储方式。A：B+树索引，有序。NULL：Hash索引</li>
+<li>Cardinality： 索引中唯一值的数目的估计值</li>
+<li>Sub_part： 是否为列的部分被索引，若显示100，则表示只对该列的前100个字符索引。如果显示NULL，则整个列被索引</li>
+<li>Packed： 关键字如何被压缩</li>
+<li>Null： 是否为null</li>
+<li>Index_type： 索引的类型</li>
+<li>Comment： 注释</li>
+</ul>
+<h2 id="B-树索引的查询性能优化"><a href="#B-树索引的查询性能优化" class="headerlink" title="B+树索引的查询性能优化"></a>B+树索引的查询性能优化</h2><p>（1） 使用 Explain 进行分析</p>
+<p><a href="https://segmentfault.com/a/1190000008131735" target="_blank" rel="noopener">MySQL 性能优化神器 Explain 使用分析</a></p>
+<p>（2）</p>
+<p>SELECT * FROM talbe_name USE INDEX(index_name) WHERE();</p>
+<p>USE INDEX(index_name) 建议优化器使用索引</p>
+<p>FORCE INDEX(index_name) 强制优化器使用索引</p>
+<p>（3）索引失效的解决方法以及索引使用的注意点</p>
+<ol>
+<li>一般在where和join中出现的列需要建立索引</li>
+<li>MySQL只对&lt;、&lt;=、=、&gt;、&gt;=、BETWEEN、IN和部分情况下的LIKE才会使用索引</li>
+<li>查询条件包含OR，且有不含索引的列时，索引失效</li>
+<li>联合索引，不符合最左前缀原则，索引失效</li>
+<li>LIKE模糊查询以%开头，索引失效</li>
+<li>列类型是字符串，WHERE时不用引号，索引失效</li>
+<li>当全表扫描速度比索引速度快时，mysql会使用全表扫描，此时索引失效</li>
+</ol>
+<h2 id="全文检索"><a href="#全文检索" class="headerlink" title="全文检索"></a>全文检索</h2><p>全文索引(Full-Text Search)是将存储于数据库中的整本书或整篇文章中的任意内容信息查找出来的技术。</p>
+<p>（1）倒排索引（辅助表）</p>
+<ul>
+<li>inverted file index {单词,单词所在文档的ID}</li>
+<li>full inverted index {单词,(单词所在的文档ID,在具体文档中的位置)}</li>
+</ul>
+<h2 id="参考资料："><a href="#参考资料：" class="headerlink" title="参考资料："></a>参考资料：</h2><ul>
+<li>《MySQL技术内幕:InnoDB存储引擎(第2版)》 姜承尧 著</li>
+<li><a href="https://blog.csdn.net/v_JULY_v/article/details/6530142" target="_blank" rel="noopener">从B树、B+树、B*树谈到R 树</a></li>
+<li><a href="http://allan.li/mysql-index-optimize/" target="_blank" rel="noopener">从MySQL Bug#67718浅谈B+树索引的分裂优化</a></li>
+</ul>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/12/20/深入理解CAS/" rel="next" title="深入理解CAS">
+                <i class="fa fa-chevron-left"></i> 深入理解CAS
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/12/20/InnoDB如何保证事务四大特性/" rel="prev" title="InnoDB如何保证事务四大特性">
+                InnoDB如何保证事务四大特性 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">Julindada</p>
+              <p class="site-description motion-element" itemprop="description">Think Different,Java,JVM,多线程</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">6</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">3</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/Julindada" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+            <div class="links-of-blogroll motion-element links-of-blogroll-block">
+              <div class="links-of-blogroll-title">
+                <i class="fa  fa-fw fa-link"></i>
+                Friends
+              </div>
+              <ul class="links-of-blogroll-list">
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://angovia.me/" title="gdkkx" target="_blank">gdkkx</a>
+                  </li>
+                
+              </ul>
+            </div>
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#为什么使用B-树？"><span class="nav-number">1.</span> <span class="nav-text">为什么使用B+树？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#B-树索引的分裂"><span class="nav-number">2.</span> <span class="nav-text">B+树索引的分裂</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#B-树索引的管理"><span class="nav-number">3.</span> <span class="nav-text">B+树索引的管理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#B-树索引的查询性能优化"><span class="nav-number">4.</span> <span class="nav-text">B+树索引的查询性能优化</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#全文检索"><span class="nav-number">5.</span> <span class="nav-text">全文检索</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考资料："><span class="nav-number">6.</span> <span class="nav-text">参考资料：</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Julindada</span>
+
+  
+</div>
+<!--
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Gemini</a> v5.1.4</div>
+
+-->
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
