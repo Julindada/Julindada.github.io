@@ -1,0 +1,791 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/hexo_icon.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/hexo_icon.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/hexo_icon.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/hexo_icon.png?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="G1(Garbage-First )垃圾回收算法，HotspotVM的四种GC算法之一。G1垃圾回收器启动参数-XX:+UseG1GC，Java 9开始被作为默认垃圾回收器。这里基于读者已经了解其他三种GC算法，我作为一个blog搬运工(关于G1算法的优秀blog请看参考资料)，谈一下对G1算法的理解思路。 基本概念1. GC算法中的并行和并发   并发(concurrent):通常指GC线程与应">
+<meta property="og:type" content="article">
+<meta property="og:title" content="对G1算法和G1垃圾回收器的理解">
+<meta property="og:url" content="http://yoursite.com/2019/01/06/对G1算法和G1垃圾回收器的理解/index.html">
+<meta property="og:site_name" content="Julindada">
+<meta property="og:description" content="G1(Garbage-First )垃圾回收算法，HotspotVM的四种GC算法之一。G1垃圾回收器启动参数-XX:+UseG1GC，Java 9开始被作为默认垃圾回收器。这里基于读者已经了解其他三种GC算法，我作为一个blog搬运工(关于G1算法的优秀blog请看参考资料)，谈一下对G1算法的理解思路。 基本概念1. GC算法中的并行和并发   并发(concurrent):通常指GC线程与应">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://yoursite.com/images/satb.png%20=50x50">
+<meta property="og:updated_time" content="2019-01-07T06:43:37.320Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="对G1算法和G1垃圾回收器的理解">
+<meta name="twitter:description" content="G1(Garbage-First )垃圾回收算法，HotspotVM的四种GC算法之一。G1垃圾回收器启动参数-XX:+UseG1GC，Java 9开始被作为默认垃圾回收器。这里基于读者已经了解其他三种GC算法，我作为一个blog搬运工(关于G1算法的优秀blog请看参考资料)，谈一下对G1算法的理解思路。 基本概念1. GC算法中的并行和并发   并发(concurrent):通常指GC线程与应">
+<meta name="twitter:image" content="http://yoursite.com/images/satb.png%20=50x50">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2019/01/06/对G1算法和G1垃圾回收器的理解/">
+
+
+
+
+
+  <title>对G1算法和G1垃圾回收器的理解 | Julindada</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Julindada</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/01/06/对G1算法和G1垃圾回收器的理解/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Julindada">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Julindada">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">对G1算法和G1垃圾回收器的理解</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-01-06T17:09:39+08:00">
+                2019-01-06
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/JVM/" itemprop="url" rel="index">
+                    <span itemprop="name">JVM</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>G1(Garbage-First )垃圾回收算法，HotspotVM的四种GC算法之一。<br>G1垃圾回收器启动参数-XX:+UseG1GC，Java 9开始被作为默认垃圾回收器。<br>这里基于读者已经了解其他三种GC算法，我作为一个blog搬运工(关于G1算法的优秀blog请看参考资料)，谈一下对G1算法的理解思路。</p>
+<h2 id="基本概念"><a href="#基本概念" class="headerlink" title="基本概念"></a>基本概念</h2><h4>1. GC算法中的并行和并发</h4>
+
+<blockquote>
+<p>并发(concurrent):通常指GC线程与应用程序线程宏观上看是一起执行的</p>
+<p>并行(parallel):指多个线程进行垃圾回收，此时应用程序线程是暂停的</p>
+</blockquote>
+<h4>2. 三色标记</h4>
+
+<p>黑色:该对象与它的子对象都被扫描</p>
+<p>灰色:对象本身被扫描,但还没扫描完该对象中的子对象</p>
+<p>白色:未被扫描对象，扫描完成所有对象之后，最终为白色的为不可达对象，即垃圾对象</p>
+<h4>3. RSet(remembered set)</h4>
+
+<p>该集合用来记录并跟踪其它region指向该region中对象的引用，使统计region中存活对象的效率更高</p>
+<h4>4. CSet(collection set)</h4>
+
+<p>记录了GC要收集的Region集合，集合里的Region可以是任意年代的。在GC的时候，对于old-&gt;young和old-&gt;old的跨代对象引用，只要扫描对应的CSet中的RSet即可。</p>
+<h4>5. SATB</h4>
+
+<p><img src="/images/satb.png =50x50" alt=""></p>
+<ol>
+<li>[top, end]区域为空闲区，top向右移来给对象在[next TAMS, top]之间分配内存</li>
+<li>并发标记在[previous TAMS, next TAMS]区间进行，并发标记结束时，将next TAMS所在的地址赋值给previous TAMS，SATB给 [bottom, previous TAMS] 之间的对象创建一个快照Bitmap，所有垃圾对象能通过快照被识别出来</li>
+<li>下一轮开始时，将top所在的地址赋值给next TAMS</li>
+</ol>
+<h2 id="分代式G1算法"><a href="#分代式G1算法" class="headerlink" title="分代式G1算法"></a>分代式G1算法</h2><p>G1算法是完全独立于Hotspot VM其他GC算法的。</p>
+<p>把G1分成 <strong>global concurrent marking</strong> 和 <strong>evacuation</strong> 两个阶段且相互独立执行的理解更友好。其他的思路我也看过，将GC分为四个阶段，最后一个阶段是筛选回收，这种理解方法并不好，因为真正回收内存的操作并不一定是紧接着在完成所有标记之后。</p>
+<h3>global concurrent marking 基于SATB</h3>
+
+<ol>
+<li><p><strong>初始标记（initial marking）</strong><font color="#DC143C">暂停阶段</font><br>从GC Roots开始标记直接可达的对象。在G1垃圾回收器中还会存在young GC，这个阶段借用了young GC的暂停</p>
+</li>
+<li><p><strong>并发标记（concurrent marking）</strong><font color="#008000">并发阶段</font><br>从GC Roots开始对堆中的对象标记，标记线程与应用程序线程并行执行，这个过程基于SATB。还会伴随着扫描SATB write barrier记录的引用变化</p>
+</li>
+<li><p><strong>最终标记（final marking / remarking）</strong><font color="#DC143C">暂停阶段</font><br>处理还未扫描完的SATB write barrier。CMS的remark阶段扫描的是INC write barrier，由于这个无法发现 Concurrent Mark 期间堆外根集（寄存器、栈）的引用变化，所以CMS的remark阶段可能会很慢。(具体区别请看<a href="https://link.zhihu.com/?target=http%3A//hllvm.group.iteye.com/group/topic/44529" target="_blank" rel="noopener"><font color="#0000CD">[HotSpot VM] 关于incremental update与SATB的一点理解</font></a>)</p>
+</li>
+<li><p><strong>筛选回收（cleanup）</strong><br>在SATB的Bitmap中统计各个region中存活对象，擦除RSet(<font color="#DC143C">Stop the World</font>)。重置空白区域并将其返回到空闲列表(<font color="#008000">并发执行</font>)</p>
+</li>
+</ol>
+<h3>evacuation</h3><br><font color="#DC143C">暂停阶段</font><br>选定需要回收的region加入到CSet中，并行地把CSet中每个region的活对象拷贝到新的region里。<br><br><h3>G1 GC选取CSet的模式</h3>
+
+<ol>
+<li>Young GC：选定所有young gen里的region。通过控制young gen的region个数来控制young GC的开销。 </li>
+<li>Mixed GC：选定所有young gen里的region，外加根据global concurrent marking统计得出收集收益高的若干old gen region。在用户指定的开销目标范围内尽可能选择收益高的old gen region。</li>
+</ol>
+<h2 id="参考资料："><a href="#参考资料：" class="headerlink" title="参考资料："></a>参考资料：</h2><ul>
+<li><a href="https://hllvm-group.iteye.com/group/topic/44381#post-272188" target="_blank" rel="noopener"><font color="#0000CD">[HotSpot VM] 请教G1算法的原理</font></a></li>
+<li><a href="https://link.zhihu.com/?target=http%3A//hllvm.group.iteye.com/group/topic/44529" target="_blank" rel="noopener"><font color="#0000CD">[HotSpot VM] 关于incremental update与SATB的一点理解</font></a></li>
+<li><a href="https://cloud.tencent.com/developer/article/1378263" target="_blank" rel="noopener"><font color="#0000CD">可能是最全面的G1学习笔记 - 阿杜的世界</font></a></li>
+<li><a href="https://www.oracle.com/webfolder/technetwork/tutorials/obe/java/G1GettingStarted/index.html" target="_blank" rel="noopener"><font color="#0000CD">Getting Started with the G1 Garbage Collector - Oracle</font></a></li>
+<li><a href="https://tech.meituan.com/g1.html" target="_blank" rel="noopener"><font color="#0000CD">Java Hotspot G1 GC的一些关键技术 - 美团技术团队</font></a></li>
+<li><a href="https://www.jianshu.com/p/d302ed6e2405" target="_blank" rel="noopener"><font color="#0000CD">深入理解 Java G1 垃圾收集器</font></a></li>
+</ul>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/12/20/方法区的OOM/" rel="next" title="方法区的OOM">
+                <i class="fa fa-chevron-left"></i> 方法区的OOM
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">Julindada</p>
+              <p class="site-description motion-element" itemprop="description">Think Different,Java,JVM,多线程</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">7</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">3</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/Julindada" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+            <div class="links-of-blogroll motion-element links-of-blogroll-block">
+              <div class="links-of-blogroll-title">
+                <i class="fa  fa-fw fa-link"></i>
+                Friends
+              </div>
+              <ul class="links-of-blogroll-list">
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://angovia.me/" title="gdkkx" target="_blank">gdkkx</a>
+                  </li>
+                
+              </ul>
+            </div>
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#基本概念"><span class="nav-number">1.</span> <span class="nav-text">基本概念</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#undefined"><span class="nav-number">1.0.1.</span> <span class="nav-text">1. GC算法中的并行和并发</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#undefined"><span class="nav-number">1.0.2.</span> <span class="nav-text">2. 三色标记</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#undefined"><span class="nav-number">1.0.3.</span> <span class="nav-text">3. RSet(remembered set)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#undefined"><span class="nav-number">1.0.4.</span> <span class="nav-text">4. CSet(collection set)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#undefined"><span class="nav-number">1.0.5.</span> <span class="nav-text">5. SATB</span></a></li></ol></li></ol><li class="nav-item nav-level-2"><a class="nav-link" href="#分代式G1算法"><span class="nav-number">2.</span> <span class="nav-text">分代式G1算法</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#undefined"><span class="nav-number">2.1.</span> <span class="nav-text">global concurrent marking 基于SATB</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#undefined"><span class="nav-number">2.2.</span> <span class="nav-text">evacuation</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#undefined"><span class="nav-number">2.3.</span> <span class="nav-text">G1 GC选取CSet的模式</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考资料："><span class="nav-number">3.</span> <span class="nav-text">参考资料：</span></a></li></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Julindada</span>
+
+  
+</div>
+<!--
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Gemini</a> v5.1.4</div>
+
+-->
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
