@@ -79,19 +79,19 @@
 
 
 
-<meta name="description" content="G1(Garbage-First )垃圾回收算法，HotspotVM的四种GC算法之一。G1垃圾回收器启动参数-XX:+UseG1GC，Java 9开始被作为默认垃圾回收器。这里基于读者已经了解其他三种GC算法，我作为一个blog搬运工(关于G1算法的优秀blog请看参考资料)，谈一下对G1算法的理解思路。 基本概念GC算法中的并行和并发   并发(concurrent):通常指GC线程与应用程序">
+<meta name="description" content="G1(Garbage-First )垃圾回收算法，HotspotVM的四种GC算法之一。G1垃圾回收器启动参数-XX:+UseG1GC，Java 9开始被作为默认垃圾回收器。这里基于读者已经了解其他三种GC算法，我作为一个blog搬运工(关于G1算法的优秀blog请看参考资料)，谈一下对G1算法的总结和理解思路。 基本概念GC算法中的并行和并发  并发(concurrent):通常指GC线程与应用">
 <meta property="og:type" content="article">
 <meta property="og:title" content="对G1算法和G1垃圾回收器的理解">
 <meta property="og:url" content="http://yoursite.com/2019/01/06/对G1算法和G1垃圾回收器的理解/index.html">
 <meta property="og:site_name" content="Julindada">
-<meta property="og:description" content="G1(Garbage-First )垃圾回收算法，HotspotVM的四种GC算法之一。G1垃圾回收器启动参数-XX:+UseG1GC，Java 9开始被作为默认垃圾回收器。这里基于读者已经了解其他三种GC算法，我作为一个blog搬运工(关于G1算法的优秀blog请看参考资料)，谈一下对G1算法的理解思路。 基本概念GC算法中的并行和并发   并发(concurrent):通常指GC线程与应用程序">
+<meta property="og:description" content="G1(Garbage-First )垃圾回收算法，HotspotVM的四种GC算法之一。G1垃圾回收器启动参数-XX:+UseG1GC，Java 9开始被作为默认垃圾回收器。这里基于读者已经了解其他三种GC算法，我作为一个blog搬运工(关于G1算法的优秀blog请看参考资料)，谈一下对G1算法的总结和理解思路。 基本概念GC算法中的并行和并发  并发(concurrent):通常指GC线程与应用">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="http://yoursite.com/images/satb.png">
 <meta property="og:image" content="http://yoursite.com/images/G1Gen.png">
-<meta property="og:updated_time" content="2019-01-07T09:30:06.649Z">
+<meta property="og:updated_time" content="2019-01-08T09:40:14.826Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="对G1算法和G1垃圾回收器的理解">
-<meta name="twitter:description" content="G1(Garbage-First )垃圾回收算法，HotspotVM的四种GC算法之一。G1垃圾回收器启动参数-XX:+UseG1GC，Java 9开始被作为默认垃圾回收器。这里基于读者已经了解其他三种GC算法，我作为一个blog搬运工(关于G1算法的优秀blog请看参考资料)，谈一下对G1算法的理解思路。 基本概念GC算法中的并行和并发   并发(concurrent):通常指GC线程与应用程序">
+<meta name="twitter:description" content="G1(Garbage-First )垃圾回收算法，HotspotVM的四种GC算法之一。G1垃圾回收器启动参数-XX:+UseG1GC，Java 9开始被作为默认垃圾回收器。这里基于读者已经了解其他三种GC算法，我作为一个blog搬运工(关于G1算法的优秀blog请看参考资料)，谈一下对G1算法的总结和理解思路。 基本概念GC算法中的并行和并发  并发(concurrent):通常指GC线程与应用">
 <meta name="twitter:image" content="http://yoursite.com/images/satb.png">
 
 
@@ -344,13 +344,11 @@
       
 
       
-        <p>G1(Garbage-First )垃圾回收算法，HotspotVM的四种GC算法之一。<br>G1垃圾回收器启动参数-XX:+UseG1GC，Java 9开始被作为默认垃圾回收器。<br>这里基于读者已经了解其他三种GC算法，我作为一个blog搬运工(关于G1算法的优秀blog请看参考资料)，谈一下对G1算法的理解思路。</p>
+        <p>G1(Garbage-First )垃圾回收算法，HotspotVM的四种GC算法之一。<br>G1垃圾回收器启动参数-XX:+UseG1GC，Java 9开始被作为默认垃圾回收器。<br>这里基于读者已经了解其他三种GC算法，我作为一个blog搬运工(关于G1算法的优秀blog请看参考资料)，谈一下对G1算法的总结和理解思路。</p>
 <h2 id="基本概念"><a href="#基本概念" class="headerlink" title="基本概念"></a>基本概念</h2><h4>GC算法中的并行和并发</h4>
 
-<blockquote>
 <p>并发(concurrent):通常指GC线程与应用程序线程宏观上看是一起执行的</p>
 <p>并行(parallel):指多个线程进行垃圾回收，此时应用程序线程是暂停的</p>
-</blockquote>
 <h4>三色标记</h4>
 
 <p>黑色:该对象与它的子对象都被扫描</p>
@@ -384,7 +382,7 @@
 </blockquote>
 <p>（3）<strong>Write barrier功能</strong></p>
 <ol>
-<li>跨region的引用记录到RSet里</li>
+<li>跨region的引用同步到RSet里</li>
 <li>同步SATB快照的完整性</li>
 </ol>
 <h2 id="分代G1算法"><a href="#分代G1算法" class="headerlink" title="分代G1算法"></a>分代G1算法</h2><p>G1算法引入了region，分区young gen和old gen没有明确的界限，当新建对象大小超过region大小一半时，直接在新的一个或多个连续region中分配，并标记为Humongous,为巨型对象。</p>
