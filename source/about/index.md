@@ -15,7 +15,7 @@ Major
 
 Work
 ---
-效力于京东金融，Java开发实习生。
+目前效力于网易有道，Java开发实习生。
 
 GitHub
 ---
