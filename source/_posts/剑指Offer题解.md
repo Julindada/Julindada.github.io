@@ -16,7 +16,7 @@ categories:
 
 2. 数组中数字都在0到n-1范围内。如果没有重复数字，则每个数字对应其下标。时间复杂度为O(N)，空间复杂度为O(1)
 
-``` Java
+``` java
     public boolean duplicate(int numbers[],int length,int [] duplication) {
         if (length<=1 || numbers.length<=1)
             return false;
@@ -44,7 +44,7 @@ categories:
 思路：先检查数组左上角，若大于target，则排除最左列，若小于target，则排除最顶行。
 
 
-``` Java
+``` java
     public boolean Find(int target, int [][] array) {
         int x = 0;
         int y = array[0].length-1;
@@ -61,12 +61,63 @@ categories:
     }
 ```
 
+##3.替换空格
+
+> 请实现一个函数，将一个字符串中的每个空格替换成“%20”。例如，当字符串为We Are Happy.则经过替换之后的字符串为We%20Are%20Happy。
+
+思路：先遍历计算空格数量，从后到前移动字符(以保证所有字符只移动一次)。
+
+``` java
+    public String replaceSpace(StringBuffer str) {
+        int length = str.length()-1;
+        for (int i=0; i<=length; i++)
+            if (str.charAt(i) == ' ')
+                str.append("  ");
+        for (int i=str.length()-1, j=length; i>=0 && j>=0;){
+            if (str.charAt(j)==' '){
+                str.setCharAt(i--,'0');
+                str.setCharAt(i--,'2');
+                str.setCharAt(i--,'%');
+                j--;
+            }else {
+                str.setCharAt(i,str.charAt(j));
+                i--;
+                j--;
+            }
+        }
+        return str.toString();
+    }
+```
+
+## 4.从尾到头打印链表
+
+> 输入一个链表，按链表值从尾到头的顺序返回一个ArrayList。
+
+思路：栈的特点是先进后出
+
+``` java
+    public ArrayList<Integer> printListFromTailToHead(ListNode listNode) {
+        Stack<Integer> stack = new Stack<>();
+        ArrayList<Integer> ret = new ArrayList<>();
+        while (listNode != null){
+            stack.push(listNode.val);
+            listNode=listNode.next;
+        }
+        while (!stack.empty()){
+            ret.add(stack.pop());
+        }
+        return ret;
+    }
+```
+
+
+
 ## 二叉树的镜像
 
 思路：先递归遍历二叉树，再交换左右节点，返回当前根节点
 
 
-``` Java
+``` java
 	public TreeNode Mirror(TreeNode root) {
 		if (root == null)
 		    return null;
@@ -86,7 +137,7 @@ categories:
 
 思路：快慢指针，指针指向地址相等时，将其中一个指针指向头节点，两指针速度相等遍历，相遇时的节点就是环的入口节点
 
-``` Java
+``` java
     public ListNode EntryNodeOfLoop(ListNode pHead){
         if (pHead==null||pHead.next==null)
             return null;
