@@ -175,6 +175,50 @@ categories:
 
 
 
+##7.用两个栈实现队列
+
+> 用两个栈来实现一个队列，完成队列的Push和Pop操作。 队列中的元素为int类型。
+
+思路：一个出栈，一个入栈。若出栈为空，则将入栈倒入到出栈中。
+
+``` java
+	Stack<Integer> in = new Stack<Integer>();
+    Stack<Integer> out = new Stack<Integer>();
+
+    public void push(int node) {
+        in.push(node);
+    }
+
+    public int pop() {
+        if (out.isEmpty())
+            while (!in.isEmpty())
+                out.push(in.pop());
+        if (out.isEmpty())
+            return 0;
+        return out.pop();
+    }
+```
+
+
+
+
+
+## 8.斐波那契数列
+
+> 大家都知道斐波那契数列，现在要求输入一个整数n，请你输出斐波那契数列的第n项（从0开始，第0项为0，第1项为1）。
+
+思路：递归效率太低，且占用大量栈内存，使用动态规划来做。
+
+``` java
+    public int Fibonacci(int n) {
+        if (n<2) return n;
+        int[] x=new int[]{0,1};
+        for (int i=2; i<=n; i++)
+            x[i&1]=x[0]+x[1];
+        return x[n&1];
+    }
+```
+
 
 
 ## 二叉树的镜像
