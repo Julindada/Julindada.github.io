@@ -199,8 +199,6 @@ categories:
 
 
 
-
-
 ## 斐波那契数列
 
 > 大家都知道斐波那契数列，现在要求输入一个整数n，请你输出斐波那契数列的第n项（从0开始，第0项为0，第1项为1）。
@@ -214,6 +212,40 @@ categories:
         for (int i=2; i<=n; i++)
             x[i&1]=x[0]+x[1];
         return x[n&1];
+    }
+```
+
+## 旋转数组的最小数字
+
+> 把一个数组最开始的若干个元素搬到数组的末尾，我们称之为数组的旋转。 输入一个非减排序的数组的一个旋转，输出旋转数组的最小元素。 例如数组{3,4,5,1,2}为{1,2,3,4,5}的一个旋转，该数组的最小值为1。 NOTE：给出的所有元素都大于0，若数组大小为0，请返回0。
+
+思路：二分法，若mid<high，后半为升序，最小值在前半。否则，最小值在后半。还要考虑low、mid、high位置的值相等的情况使用顺序查找。
+
+``` java
+    public int minNumberInRotateArray(int [] array) {
+        if (array.length==0) return 0;
+        int low=0, high=array.length-1;
+        while (low<high){
+            int mid=(low+high)/2;
+            if (array[low]==array[mid]&&array[mid]==array[high]){
+                return minNum(array, low, high);
+            }else if (array[mid]<=array[high]){
+                high=mid;
+            }else {//array[mid]>array[high]
+                low=mid+1;
+            }
+        }
+        return array[low];
+    }
+	//顺序查找
+    private int minNum(int [] array, int low, int high){
+        int min=low;
+        for (int i=low+1; i<=high; i++){
+            if (array[i]<array[min]){
+                min=i;
+            }
+        }
+        return array[min];
     }
 ```
 
