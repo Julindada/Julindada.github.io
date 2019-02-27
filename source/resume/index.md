@@ -6,9 +6,10 @@ password: julin233
  <div align="center">
      <h1>朱琳</h1>
      <div>
-     电话：17602299297&nbsp;·&nbsp;邮箱：11840122461@qq.com&nbsp;·&nbsp;博客：<a href="https://julindada.github.io/">julindada.github.io</a>
+     电话：17602299297&nbsp;·&nbsp;邮箱：julin1184012246@gmail.com&nbsp;·&nbsp;博客：<a href="https://julindada.github.io/">julindada.github.io</a>
      </div>
  </div>
+
 
 
 
@@ -18,7 +19,7 @@ password: julin233
 
  - 出生日期：1997.07
 
- - 求职意向：Java 研发工程师
+ - 求职意向：后端开发工程师
 
 
 ## 教育经历
