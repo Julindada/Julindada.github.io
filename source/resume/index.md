@@ -6,9 +6,10 @@ password: julin233
  <div align="center">
      <h1>朱琳</h1>
      <div>
-     电话：17602299297&nbsp;·&nbsp;邮箱：julin1184012246@gmail.com&nbsp;·&nbsp;博客：<a href="https://julindada.github.io/">julindada.github.io</a>
+     电话：17602299297&nbsp;·&nbsp;邮箱：frankzhu233@gmail.com&nbsp;·&nbsp;博客：<a href="https://julindada.github.io/">julindada.github.io</a>
      </div>
  </div>
+
 
 
 
@@ -37,11 +38,11 @@ password: julin233
 
 - 分布式：了解Paxos、Raft一致性算法，HDFS的使用，分布式思想和解决问题的方法
 
-- Web开发：掌握Spring/SpringMVC/ Mybatis/Spring boot开发使用。了解tomcat、nginx、redis、RPC框架的使用
+- Web开发：掌握Spring/SpringMVC/ Mybatis/Spring boot开发使用。了解tomcat、nginx、RPC框架的使用
 
-- 前端（包括移动端）：掌握Bootstrap、jQuery等前端框架，了解kotlin以及Anko库开发Android
+- 前端（包括移动端）：掌握Bootstrap、jQuery、Vue等前端框架，了解kotlin以及Anko库开发Android
 
-- 数据库相关：**掌握MySQL的InnoDB存储引擎**、了解分布式数据库TiDB及其技术内幕
+- 数据库相关：**掌握MySQL的InnoDB存储引擎**、了解Redis底层原理、分布式数据库TiDB及其技术内幕
 
 - 版本管理和自动构建工具：有Svn/Git基础，会使用maven、gradle
 
