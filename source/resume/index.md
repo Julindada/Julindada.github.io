@@ -38,7 +38,7 @@ password: julin233
 
 - 分布式：了解Paxos、Raft一致性算法，HDFS的使用，分布式思想和解决问题的方法
 
-- Web开发：掌握Spring/SpringMVC/ Mybatis/Spring boot开发使用。了解tomcat、nginx、RPC框架的使用
+- Web开发：掌握Spring/SpringMVC/ Mybatis/Spring boot开发使用。了解tomcat、nginx、RPC框架的使用，Kafka的使用和持久化原理。
 
 - 前端（包括移动端）：掌握Bootstrap、jQuery、Vue等前端框架，了解kotlin以及Anko库开发Android
 
