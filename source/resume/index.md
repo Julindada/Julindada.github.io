@@ -21,7 +21,7 @@ password: julin233
 
  - 出生日期：1997.07
 
- - 求职意向：后端开发工程师
+ - 求职意向：后端开发工程师(包括但不限于Java)
 
 
 ## 教育经历
@@ -36,11 +36,11 @@ password: julin233
 
 - 开发语言基础：熟练掌握**Java、JVM、Java多线程**、设计模式，阅读过部分JDK源码，了解Python(Flask框架)、Shell脚本
 
-- 分布式：了解Paxos、Raft一致性算法，HDFS的使用，分布式思想和解决问题的方法
+- 分布式：了解Paxos、Raft一致性算法，分布式思想和解决问题的方法
 
-- Web开发：掌握Spring/SpringMVC/ Mybatis/Spring boot开发使用。了解tomcat、nginx、RPC框架的使用，Kafka的使用和持久化原理。
+- Web开发：掌握Spring/SpringMVC/ Mybatis/Spring boot开发使用。了解tomcat、nginx、RPC框架、ElasticSearch的使用，Kafka的使用和持久化原理。
 
-- 前端（包括移动端）：掌握Bootstrap、jQuery、Vue等前端框架，了解kotlin以及Anko库开发Android
+- 前端（包括移动端）：掌握Bootstrap、jQuery、Vue等前端框架的使用，了解kotlin以及Anko库开发Android
 
 - 数据库相关：**掌握MySQL的InnoDB存储引擎**、了解Redis底层原理、分布式数据库TiDB及其技术内幕
 
