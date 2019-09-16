@@ -89,20 +89,20 @@
 
 
 
-<meta name="description" content="TiDB在知乎万亿量级业务数据下的实践和挑战业务场景 业务特点 可用性要求高 个性化首页推送，是最重要的流量分发渠道  写入量大 峰值每秒写入40K+行记录，日新增记录金30亿条  历史数据“长期”保存 已读历史记录保存三年，近一万三千亿条数据  查询吞吐高 峰值30K+QPS，每秒大概产生 3 万次独立的已读查询  响应时间敏感 整个查询响应时间（端到端超时）是 90ms  可以容忍“false">
+<meta name="description" content="TiDB在知乎万亿量级业务数据下的实践和挑战 非原创。本文根据孙晓光老师在 TiDB TechDay 2019 北京站上的演讲整理。  业务场景 业务特点 可用性要求高 个性化首页推送，是最重要的流量分发渠道  写入量大 峰值每秒写入40K+行记录，日新增记录金30亿条  历史数据“长期”保存 已读历史记录保存三年，近一万三千亿条数据  查询吞吐高 峰值30K+QPS，每秒大概产生 3 万次独立的">
 <meta property="og:type" content="article">
 <meta property="og:title" content="技术播报-2019-07-19-TiDB在知乎的应用和wsl">
 <meta property="og:url" content="http://yoursite.com/2019/07/19/技术播报-2019-07-19-TiDB在知乎的应用和wsl/index.html">
 <meta property="og:site_name" content="Julindada">
-<meta property="og:description" content="TiDB在知乎万亿量级业务数据下的实践和挑战业务场景 业务特点 可用性要求高 个性化首页推送，是最重要的流量分发渠道  写入量大 峰值每秒写入40K+行记录，日新增记录金30亿条  历史数据“长期”保存 已读历史记录保存三年，近一万三千亿条数据  查询吞吐高 峰值30K+QPS，每秒大概产生 3 万次独立的已读查询  响应时间敏感 整个查询响应时间（端到端超时）是 90ms  可以容忍“false">
+<meta property="og:description" content="TiDB在知乎万亿量级业务数据下的实践和挑战 非原创。本文根据孙晓光老师在 TiDB TechDay 2019 北京站上的演讲整理。  业务场景 业务特点 可用性要求高 个性化首页推送，是最重要的流量分发渠道  写入量大 峰值每秒写入40K+行记录，日新增记录金30亿条  历史数据“长期”保存 已读历史记录保存三年，近一万三千亿条数据  查询吞吐高 峰值30K+QPS，每秒大概产生 3 万次独立的">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="http://yoursite.com/Users/julin/Julindada.github.io/source/images/技术播报-2019-07-19/TiDB在知乎业务场景.png">
 <meta property="og:image" content="http://yoursite.com/Users/julin/Julindada.github.io/source/images/技术播报-2019-07-19/知乎已读服务架构.png">
 <meta property="og:image" content="http://yoursite.com/Users/julin/Julindada.github.io/source/images/技术播报-2019-07-19/性能指标.png">
-<meta property="og:updated_time" content="2019-08-19T10:31:39.243Z">
+<meta property="og:updated_time" content="2019-09-16T06:43:43.087Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="技术播报-2019-07-19-TiDB在知乎的应用和wsl">
-<meta name="twitter:description" content="TiDB在知乎万亿量级业务数据下的实践和挑战业务场景 业务特点 可用性要求高 个性化首页推送，是最重要的流量分发渠道  写入量大 峰值每秒写入40K+行记录，日新增记录金30亿条  历史数据“长期”保存 已读历史记录保存三年，近一万三千亿条数据  查询吞吐高 峰值30K+QPS，每秒大概产生 3 万次独立的已读查询  响应时间敏感 整个查询响应时间（端到端超时）是 90ms  可以容忍“false">
+<meta name="twitter:description" content="TiDB在知乎万亿量级业务数据下的实践和挑战 非原创。本文根据孙晓光老师在 TiDB TechDay 2019 北京站上的演讲整理。  业务场景 业务特点 可用性要求高 个性化首页推送，是最重要的流量分发渠道  写入量大 峰值每秒写入40K+行记录，日新增记录金30亿条  历史数据“长期”保存 已读历史记录保存三年，近一万三千亿条数据  查询吞吐高 峰值30K+QPS，每秒大概产生 3 万次独立的">
 <meta name="twitter:image" content="http://yoursite.com/Users/julin/Julindada.github.io/source/images/技术播报-2019-07-19/TiDB在知乎业务场景.png">
 
 
@@ -365,7 +365,10 @@
       
 
       
-        <h2 id="TiDB在知乎万亿量级业务数据下的实践和挑战"><a href="#TiDB在知乎万亿量级业务数据下的实践和挑战" class="headerlink" title="TiDB在知乎万亿量级业务数据下的实践和挑战"></a>TiDB在知乎万亿量级业务数据下的实践和挑战</h2><h3 id="业务场景"><a href="#业务场景" class="headerlink" title="业务场景"></a>业务场景</h3><p><img src="/Users/julin/Julindada.github.io/source/images/技术播报-2019-07-19/TiDB在知乎业务场景.png" alt="TiDB在知乎业务场景"></p>
+        <h2 id="TiDB在知乎万亿量级业务数据下的实践和挑战"><a href="#TiDB在知乎万亿量级业务数据下的实践和挑战" class="headerlink" title="TiDB在知乎万亿量级业务数据下的实践和挑战"></a>TiDB在知乎万亿量级业务数据下的实践和挑战</h2><blockquote>
+<p>非原创。本文根据孙晓光老师在 TiDB TechDay 2019 北京站上的演讲整理。</p>
+</blockquote>
+<h3 id="业务场景"><a href="#业务场景" class="headerlink" title="业务场景"></a>业务场景</h3><p><img src="/Users/julin/Julindada.github.io/source/images/技术播报-2019-07-19/TiDB在知乎业务场景.png" alt="TiDB在知乎业务场景"></p>
 <h3 id="业务特点"><a href="#业务特点" class="headerlink" title="业务特点"></a>业务特点</h3><ol>
 <li><p>可用性要求高</p>
 <p>个性化首页推送，是最重要的流量分发渠道</p>
