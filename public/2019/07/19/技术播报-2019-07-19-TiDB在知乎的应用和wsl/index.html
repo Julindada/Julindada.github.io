@@ -89,21 +89,21 @@
 
 
 
-<meta name="description" content="TiDB在知乎万亿量级业务数据下的实践和挑战 非原创。本文根据孙晓光老师在 TiDB TechDay 2019 北京站上的演讲整理。  业务场景 业务特点 可用性要求高 个性化首页推送，是最重要的流量分发渠道  写入量大 峰值每秒写入40K+行记录，日新增记录金30亿条  历史数据“长期”保存 已读历史记录保存三年，近一万三千亿条数据  查询吞吐高 峰值30K+QPS，每秒大概产生 3 万次独立的">
+<meta name="description" content="TiDB在知乎万亿量级业务数据下的实践和挑战非原创。本文根据孙晓光老师在 TiDB TechDay 2019 北京站上的演讲整理。 业务场景 业务特点 可用性要求高 个性化首页推送，是最重要的流量分发渠道  写入量大 峰值每秒写入40K+行记录，日新增记录金30亿条  历史数据“长期”保存 已读历史记录保存三年，近一万三千亿条数据  查询吞吐高 峰值30K+QPS，每秒大概产生 3 万次独立的已读">
 <meta property="og:type" content="article">
 <meta property="og:title" content="技术播报-2019-07-19-TiDB在知乎的应用和wsl">
 <meta property="og:url" content="http://yoursite.com/2019/07/19/技术播报-2019-07-19-TiDB在知乎的应用和wsl/index.html">
 <meta property="og:site_name" content="Julindada">
-<meta property="og:description" content="TiDB在知乎万亿量级业务数据下的实践和挑战 非原创。本文根据孙晓光老师在 TiDB TechDay 2019 北京站上的演讲整理。  业务场景 业务特点 可用性要求高 个性化首页推送，是最重要的流量分发渠道  写入量大 峰值每秒写入40K+行记录，日新增记录金30亿条  历史数据“长期”保存 已读历史记录保存三年，近一万三千亿条数据  查询吞吐高 峰值30K+QPS，每秒大概产生 3 万次独立的">
+<meta property="og:description" content="TiDB在知乎万亿量级业务数据下的实践和挑战非原创。本文根据孙晓光老师在 TiDB TechDay 2019 北京站上的演讲整理。 业务场景 业务特点 可用性要求高 个性化首页推送，是最重要的流量分发渠道  写入量大 峰值每秒写入40K+行记录，日新增记录金30亿条  历史数据“长期”保存 已读历史记录保存三年，近一万三千亿条数据  查询吞吐高 峰值30K+QPS，每秒大概产生 3 万次独立的已读">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:image" content="http://yoursite.com/Users/julin/Julindada.github.io/source/images/技术播报-2019-07-19/TiDB在知乎业务场景.png">
-<meta property="og:image" content="http://yoursite.com/Users/julin/Julindada.github.io/source/images/技术播报-2019-07-19/知乎已读服务架构.png">
-<meta property="og:image" content="http://yoursite.com/Users/julin/Julindada.github.io/source/images/技术播报-2019-07-19/性能指标.png">
-<meta property="og:updated_time" content="2019-09-16T06:43:43.087Z">
+<meta property="og:image" content="http://yoursite.com/images/技术播报-2019-07-19/TiDB在知乎业务场景.png">
+<meta property="og:image" content="http://yoursite.com/images/技术播报-2019-07-19/知乎已读服务架构.png">
+<meta property="og:image" content="http://yoursite.com/images/技术播报-2019-07-19/性能指标.png">
+<meta property="og:updated_time" content="2019-09-16T07:58:55.373Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="技术播报-2019-07-19-TiDB在知乎的应用和wsl">
-<meta name="twitter:description" content="TiDB在知乎万亿量级业务数据下的实践和挑战 非原创。本文根据孙晓光老师在 TiDB TechDay 2019 北京站上的演讲整理。  业务场景 业务特点 可用性要求高 个性化首页推送，是最重要的流量分发渠道  写入量大 峰值每秒写入40K+行记录，日新增记录金30亿条  历史数据“长期”保存 已读历史记录保存三年，近一万三千亿条数据  查询吞吐高 峰值30K+QPS，每秒大概产生 3 万次独立的">
-<meta name="twitter:image" content="http://yoursite.com/Users/julin/Julindada.github.io/source/images/技术播报-2019-07-19/TiDB在知乎业务场景.png">
+<meta name="twitter:description" content="TiDB在知乎万亿量级业务数据下的实践和挑战非原创。本文根据孙晓光老师在 TiDB TechDay 2019 北京站上的演讲整理。 业务场景 业务特点 可用性要求高 个性化首页推送，是最重要的流量分发渠道  写入量大 峰值每秒写入40K+行记录，日新增记录金30亿条  历史数据“长期”保存 已读历史记录保存三年，近一万三千亿条数据  查询吞吐高 峰值30K+QPS，每秒大概产生 3 万次独立的已读">
+<meta name="twitter:image" content="http://yoursite.com/images/技术播报-2019-07-19/TiDB在知乎业务场景.png">
 
 
 
@@ -365,10 +365,8 @@
       
 
       
-        <h2 id="TiDB在知乎万亿量级业务数据下的实践和挑战"><a href="#TiDB在知乎万亿量级业务数据下的实践和挑战" class="headerlink" title="TiDB在知乎万亿量级业务数据下的实践和挑战"></a>TiDB在知乎万亿量级业务数据下的实践和挑战</h2><blockquote>
-<p>非原创。本文根据孙晓光老师在 TiDB TechDay 2019 北京站上的演讲整理。</p>
-</blockquote>
-<h3 id="业务场景"><a href="#业务场景" class="headerlink" title="业务场景"></a>业务场景</h3><p><img src="/Users/julin/Julindada.github.io/source/images/技术播报-2019-07-19/TiDB在知乎业务场景.png" alt="TiDB在知乎业务场景"></p>
+        <h2 id="TiDB在知乎万亿量级业务数据下的实践和挑战"><a href="#TiDB在知乎万亿量级业务数据下的实践和挑战" class="headerlink" title="TiDB在知乎万亿量级业务数据下的实践和挑战"></a>TiDB在知乎万亿量级业务数据下的实践和挑战</h2><p><strong>非原创。本文根据孙晓光老师在 TiDB TechDay 2019 北京站上的演讲整理。</strong></p>
+<h3 id="业务场景"><a href="#业务场景" class="headerlink" title="业务场景"></a>业务场景</h3><p><img src="/images/技术播报-2019-07-19/TiDB在知乎业务场景.png" alt="TiDB在知乎业务场景"></p>
 <h3 id="业务特点"><a href="#业务特点" class="headerlink" title="业务特点"></a>业务特点</h3><ol>
 <li><p>可用性要求高</p>
 <p>个性化首页推送，是最重要的流量分发渠道</p>
@@ -388,10 +386,10 @@
 <li><p>可以容忍“false positive”(误报)</p>
 </li>
 </ol>
-<h3 id="已读服务架构"><a href="#已读服务架构" class="headerlink" title="已读服务架构"></a>已读服务架构</h3><p><img src="/Users/julin/Julindada.github.io/source/images/技术播报-2019-07-19/知乎已读服务架构.png" alt="知乎已读服务架构"></p>
+<h3 id="已读服务架构"><a href="#已读服务架构" class="headerlink" title="已读服务架构"></a>已读服务架构</h3><p><img src="/images/技术播报-2019-07-19/知乎已读服务架构.png" alt="知乎已读服务架构"></p>
 <h3 id="为什么选用TiDB"><a href="#为什么选用TiDB" class="headerlink" title="为什么选用TiDB"></a>为什么选用TiDB</h3><p>分库分表 + MHA(Master High Availability) 机制 在流量不大时可以忍受，但在每月新增一千亿数据的情况下，需要思考的就是怎样让系统可持续发展、可维护。</p>
 <p>TiDB 兼容 MySQL，完全支持 ACID 事务，可扩展性好。</p>
-<h3 id="性能指标"><a href="#性能指标" class="headerlink" title="性能指标"></a>性能指标</h3><p><img src="/Users/julin/Julindada.github.io/source/images/技术播报-2019-07-19/性能指标.png" alt="性能指标"></p>
+<h3 id="性能指标"><a href="#性能指标" class="headerlink" title="性能指标"></a>性能指标</h3><p><img src="/images/技术播报-2019-07-19/性能指标.png" alt="性能指标"></p>
 <h2 id="TiDB-3-0-GA"><a href="#TiDB-3-0-GA" class="headerlink" title="TiDB 3.0 GA"></a>TiDB 3.0 GA</h2><h3 id="性能和稳定性提升"><a href="#性能和稳定性提升" class="headerlink" title="性能和稳定性提升"></a>性能和稳定性提升</h3><p>TiDB 3.0 版本显著提升了大规模集群的稳定性，集群支持 150+ 存储节点，300+TB 存储容量长期稳定运行。易用性方面引入大量降低用户运维成本的优化，包括引入 Information_Schema 中的多个实用系统视图、EXPLAIN ANALYZE、SQL Trace 等。在性能方面，特别是 OLTP 性能方面，3.0 比 2.1 也有大幅提升，其中 TPC-C 性能提升约 4.5 倍，Sysbench 性能提升约 1.5 倍，OLAP 方面，TPC-H 50G Q15 因实现 View 可以执行，至此 TPC-H 22 个 Query 均可正常运行。新功能方面增加了窗口函数、视图（实验特性）、分区表、插件系统、悲观锁（实验特性）。</p>
 <h2 id="Windows-Terminal安装教程及操作"><a href="#Windows-Terminal安装教程及操作" class="headerlink" title="Windows Terminal安装教程及操作"></a>Windows Terminal安装教程及操作</h2><h3 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h3><p>Microsoft Store 找 Windows Terminal 安装预览版</p>
 <p>Microsoft Store 搜索 Linux 可以安装 内置 Linux ，PC 用的比较多的就是 Ubuntu 和 Debian 了。目前我使用的是 Debian ，当然也有 CentOS 。</p>
