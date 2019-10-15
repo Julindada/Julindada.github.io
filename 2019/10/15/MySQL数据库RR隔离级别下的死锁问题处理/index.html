@@ -89,16 +89,17 @@
 
 
 
-<meta name="description" content="Think Different,Java,JVM,多线程">
-<meta property="og:type" content="website">
-<meta property="og:title" content="Julindada">
-<meta property="og:url" content="http://yoursite.com/archives/2018/index.html">
+<meta name="description" content="由于是在写公司需求时遇到的死锁问题，故不便透露过多信息，仅给出相关场景描述  场景描述12345begin;index idx_userId_value (userId, value);select * from user_table where userId = &apos;u2&apos; for update;insert into user_table (userId, value) values (&apos;u">
+<meta property="og:type" content="article">
+<meta property="og:title" content="MySQL数据库RR隔离级别下的死锁问题处理">
+<meta property="og:url" content="http://yoursite.com/2019/10/15/MySQL数据库RR隔离级别下的死锁问题处理/index.html">
 <meta property="og:site_name" content="Julindada">
-<meta property="og:description" content="Think Different,Java,JVM,多线程">
+<meta property="og:description" content="由于是在写公司需求时遇到的死锁问题，故不便透露过多信息，仅给出相关场景描述  场景描述12345begin;index idx_userId_value (userId, value);select * from user_table where userId = &apos;u2&apos; for update;insert into user_table (userId, value) values (&apos;u">
 <meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2019-10-15T09:59:14.404Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Julindada">
-<meta name="twitter:description" content="Think Different,Java,JVM,多线程">
+<meta name="twitter:title" content="MySQL数据库RR隔离级别下的死锁问题处理">
+<meta name="twitter:description" content="由于是在写公司需求时遇到的死锁问题，故不便透露过多信息，仅给出相关场景描述  场景描述12345begin;index idx_userId_value (userId, value);select * from user_table where userId = &apos;u2&apos; for update;insert into user_table (userId, value) values (&apos;u">
 
 
 
@@ -128,13 +129,13 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/archives/2018/">
+  <link rel="canonical" href="http://yoursite.com/2019/10/15/MySQL数据库RR隔离级别下的死锁问题处理/">
 
 
 
 
 
-  <title>归档 | Julindada</title>
+  <title>MySQL数据库RR隔离级别下的死锁问题处理 | Julindada</title>
   
 
 
@@ -153,7 +154,7 @@
     
   
 
-  <div class="container sidebar-position-left page-archive">
+  <div class="container sidebar-position-left page-post-detail">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
@@ -257,247 +258,182 @@
           <div id="content" class="content">
             
 
-  
-  
-  
-  <div class="post-block archive">
-    <div id="posts" class="posts-collapse">
-      <span class="archive-move-on"></span>
+  <div id="posts" class="posts-expand">
+    
 
-      <span class="archive-page-counter">
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/10/15/MySQL数据库RR隔离级别下的死锁问题处理/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Julindada">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Julindada">
+    </span>
+
+    
+      <header class="post-header">
+
         
         
+          <h1 class="post-title" itemprop="name headline">MySQL数据库RR隔离级别下的死锁问题处理</h1>
         
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-10-15T17:09:56+08:00">
+                2019-10-15
+              </time>
+            
+
+            
+
+            
+          </span>
+
           
-        
-        嗯..! 目前共计 12 篇日志。 继续努力。
-      </span>
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/数据库/" itemprop="url" rel="index">
+                    <span itemprop="name">数据库</span>
+                  </a>
+                </span>
 
-      
-
-        
-        
-        
-
-        
+                
+                
+              
+            </span>
           
-          <div class="collection-title">
-            <h1 class="archive-year" id="archive-year-2018">2018</h1>
-          </div>
-        
-        
 
-        
+          
+            
+          
 
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-    <header class="post-header">
+          
+          
 
-      <h2 class="post-title">
-        
-            <a class="post-title-link" href="/2018/12/20/方法区的OOM/" itemprop="url">
-              
-                <span itemprop="name">方法区的OOM</span>
-              
-            </a>
-        
-      </h2>
+          
 
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated" datetime="2018-12-20T14:44:08+08:00" content="2018-12-20">
-          12-20
-        </time>
-      </div>
+          
 
-    </header>
-  </article>
+          
 
+        </div>
+      </header>
+    
 
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
 
       
-
-        
-        
-        
-
-        
-        
-
-        
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h2 class="post-title">
-        
-            <a class="post-title-link" href="/2018/12/20/InnoDB如何保证事务四大特性/" itemprop="url">
-              
-                <span itemprop="name">InnoDB如何保证事务四大特性</span>
-              
-            </a>
-        
-      </h2>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated" datetime="2018-12-20T14:43:01+08:00" content="2018-12-20">
-          12-20
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
-
       
 
-        
-        
-        
-
-        
-        
-
-        
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h2 class="post-title">
-        
-            <a class="post-title-link" href="/2018/12/20/InnoDB索引详解/" itemprop="url">
-              
-                <span itemprop="name">InnoDB索引详解</span>
-              
-            </a>
-        
-      </h2>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated" datetime="2018-12-20T14:41:21+08:00" content="2018-12-20">
-          12-20
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
+      
+        <blockquote>
+<p> 由于是在写公司需求时遇到的死锁问题，故不便透露过多信息，仅给出相关场景描述</p>
+</blockquote>
+<h2 id="场景描述"><a href="#场景描述" class="headerlink" title="场景描述"></a>场景描述</h2><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">begin</span>;</span><br><span class="line">index idx_userId_value (userId, value);</span><br><span class="line"><span class="keyword">select</span> * <span class="keyword">from</span> user_table <span class="keyword">where</span> userId = <span class="string">'u2'</span> <span class="keyword">for</span> <span class="keyword">update</span>;</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> user_table (userId, <span class="keyword">value</span>) <span class="keyword">values</span> (<span class="string">'u2'</span>, <span class="number">1</span>);</span><br><span class="line"><span class="keyword">commit</span>;</span><br></pre></td></tr></table></figure>
+<p>假设 idx_userId_value 上 userId 的顺序为 u1 u2 u3 u4</p>
+<p>MySQL 死锁日志中记录两个事务的 insert 语句等待 gap lock，最后抛出死锁异常。</p>
+<h2 id="分析"><a href="#分析" class="headerlink" title="分析"></a>分析</h2><p>原本的思路是可以通过互斥锁来阻塞同一个用户的并发事务。但发生了不同用户的事务，在 insert 时抛出死锁异常了。</p>
+<p>后来发现，Gap Lock 不能阻塞除 insert 之外的所有操作(到目前为止MySQL8 是这样的)</p>
+<p>在压测过程中有大量新账号出现了死锁，case 1</p>
+<h3 id="case1"><a href="#case1" class="headerlink" title="case1"></a>case1</h3><p>若账号 u2 和 u3 在表内无数据</p>
+<p>事务 A：select * from user_table where userId = ‘u2’ for update 加锁位置为 (u1, u4)。</p>
+<p>事务 B：select * from user_table where userId = ‘u3’ for update 加锁位置为 (u1, u4)</p>
+<p>gap lock 仅阻塞 insert 操作，所以 事务 A、B 之间不会互相阻塞。</p>
+<p>若 A 执行 insert userId 为 u2 的数据时会被阻塞，若 B 执行 insert userId 为 u3 的数据时，则会抛出死锁异常</p>
+<h3 id="case-2"><a href="#case-2" class="headerlink" title="case 2"></a>case 2</h3><p>若账号 u2 和 u3 在表内有数据</p>
+<p>事务 A 在 u2 和 u3 的 gap insert 的同时，事务 B 也在 u2 和 u3 的 gap insert 也会抛出死锁异常</p>
+<h3 id="case3"><a href="#case3" class="headerlink" title="case3"></a>case3</h3><p>U2 在表内无数据时，相同用户并发事务也会只加一个 Gap Lock。造成死锁</p>
+<h2 id="解决方案"><a href="#解决方案" class="headerlink" title="解决方案"></a>解决方案</h2><h3 id="增加死锁重试机制"><a href="#增加死锁重试机制" class="headerlink" title="增加死锁重试机制"></a>增加死锁重试机制</h3><p>出现死锁的情况比较多，条件不苛刻，会生成大量死锁日志。</p>
+<h3 id="修改隔离级别至-RC"><a href="#修改隔离级别至-RC" class="headerlink" title="修改隔离级别至 RC"></a>修改隔离级别至 RC</h3><p>修改成RC之后也满足不了业务需求</p>
+<h3 id="分布式锁"><a href="#分布式锁" class="headerlink" title="分布式锁"></a>分布式锁</h3><p>使用 Redisson 加分布式锁，若抢占不到分布式锁，则直接返回失败，不重试。需要将隔离级别改成RC，否则还是会出现死锁问题。具体实现需要结合业务需求。</p>
 
       
-
-        
-        
-        
-
-        
-        
-
-        
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h2 class="post-title">
-        
-            <a class="post-title-link" href="/2018/12/20/深入理解CAS/" itemprop="url">
-              
-                <span itemprop="name">深入理解CAS</span>
-              
-            </a>
-        
-      </h2>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated" datetime="2018-12-20T14:38:44+08:00" content="2018-12-20">
-          12-20
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
-
-      
-
-        
-        
-        
-
-        
-        
-
-        
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h2 class="post-title">
-        
-            <a class="post-title-link" href="/2018/12/20/Java内存模型与volatile实现原理/" itemprop="url">
-              
-                <span itemprop="name">Java内存模型与volatile实现原理</span>
-              
-            </a>
-        
-      </h2>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated" datetime="2018-12-20T14:25:50+08:00" content="2018-12-20">
-          12-20
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
-
-      
-
-        
-        
-        
-
-        
-        
-
-        
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h2 class="post-title">
-        
-            <a class="post-title-link" href="/2018/12/20/SingletonPattern/" itemprop="url">
-              
-                <span itemprop="name">SingletonPattern</span>
-              
-            </a>
-        
-      </h2>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated" datetime="2018-12-20T14:21:16+08:00" content="2018-12-20">
-          12-20
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
-
-      
-
     </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/08/19/emoji在Java中如何处理/" rel="next" title="emoji在Java中如何处理">
+                <i class="fa fa-chevron-left"></i> emoji在Java中如何处理
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
   </div>
   
   
   
+  </article>
 
-  
 
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
 
 
           </div>
@@ -505,6 +441,10 @@
 
 
           
+
+  
+
+
 
         </div>
         
@@ -525,8 +465,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
 
-      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
+      <section class="site-overview-wrap sidebar-panel">
         <div class="site-overview">
           <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
             
@@ -621,6 +570,22 @@
         </div>
       </section>
 
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#场景描述"><span class="nav-number">1.</span> <span class="nav-text">场景描述</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#分析"><span class="nav-number">2.</span> <span class="nav-text">分析</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#case1"><span class="nav-number">2.1.</span> <span class="nav-text">case1</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#case-2"><span class="nav-number">2.2.</span> <span class="nav-text">case 2</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#case3"><span class="nav-number">2.3.</span> <span class="nav-text">case3</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#解决方案"><span class="nav-number">3.</span> <span class="nav-text">解决方案</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#增加死锁重试机制"><span class="nav-number">3.1.</span> <span class="nav-text">增加死锁重试机制</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#修改隔离级别至-RC"><span class="nav-number">3.2.</span> <span class="nav-text">修改隔离级别至 RC</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#分布式锁"><span class="nav-number">3.3.</span> <span class="nav-text">分布式锁</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
       
 
       
@@ -760,6 +725,10 @@
 
 
   
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
 
   
 
